@@ -39,27 +39,31 @@
 			wfSetupSession();
 		}
 
-		/**
-		 * Check to see if we have a mediawiki account
-		 */
-		$id = User::idFromName(ucfirst($_SERVER['AUTHENTICATE_MAIL']));
-		if (!is_null($id)) {
+
+		#
+		# Create a new MediaWiki account if needed
+		#
+
+		$_user = HTTPAuth_getUser();
+
+		$id = User::idFromName(ucfirst($_user));
+		if (is_null($id)){
+
+			$u = User::newFromName(ucfirst($_user));
+			$user->setName(ucfirst($_user);
+			$user->setRealName('');
+			$user->setEmail(HTTPAuth_getEmail());
+			$user->mEmailAuthenticated = wfTimestampNow();
+			$user->setToken();
+			$user->saveSettings();
+			$user->addToDatabase();
+			$u = User::idFromName(ucfirst($_user));
+		}else{
 			$user->mId = $id;
 			$user->loadFromId();
-			$wgUser = $user;
-			$wgUser->setCookies();
-			return;
 		}
 
-		$u = User::newFromName(ucfirst($_SERVER['AUTHENTICATE_MAIL']));
-		$user->setName(ucfirst($_SERVER['AUTHENTICATE_MAIL']));
-		                        $user->setRealName('');
-		                        $user->setEmail(HTTPAuth_getEmail());
-		                        $user->mEmailAuthenticated = wfTimestampNow();
-		                        $user->setToken();
-		                        $user->saveSettings();
-		$user->addToDatabase();
-		$u = User::idFromName(ucfirst($_SERVER['AUTHENTICATE_MAIL']));
+
 		$wgUser = $user;
 		$wgUser->setCookies();
 		return;
