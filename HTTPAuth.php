@@ -5,7 +5,7 @@
 	#
 
 	function HTTPAuth_getUser(){
-		return $_SERVER['AUTHENTICATE_MAIL'];
+		return ucfirst($_SERVER['AUTHENTICATE_MAIL']);
 	}
 
 	function HTTPAuth_getEmail(){
@@ -46,18 +46,17 @@
 
 		$_user = HTTPAuth_getUser();
 
-		$id = User::idFromName(ucfirst($_user));
+		$id = User::idFromName($_user);
 		if (is_null($id)){
 
-			$u = User::newFromName(ucfirst($_user));
-			$user->setName(ucfirst($_user);
+			$u = User::newFromName($_user);
+			$user->setName($_user);
 			$user->setRealName('');
 			$user->setEmail(HTTPAuth_getEmail());
 			$user->mEmailAuthenticated = wfTimestampNow();
 			$user->setToken();
 			$user->saveSettings();
 			$user->addToDatabase();
-			$u = User::idFromName(ucfirst($_user));
 		}else{
 			$user->mId = $id;
 			$user->loadFromId();
