@@ -41,11 +41,31 @@
 			wfSetupSession();
 		}
 
-		$id = User::idFromName(GodAuth_getUser());
-		$user->mId = $id;
-		$user->loadFromId();
-		$wgUser = $user;
 
+		#
+		# Create a new MediaWiki account if needed
+		#
+
+		$_user = GodAuth_getUser();
+
+		$id = User::idFromName($_user);
+		if (is_null($id)){
+
+			$u = User::newFromName($_user);
+			$user->setName($_user);
+			$user->setRealName('');
+			$user->setEmail(GodAuth_getEmail());
+			$user->mEmailAuthenticated = wfTimestampNow();
+			$user->setToken();
+			$user->saveSettings();
+			$user->addToDatabase();
+		}else{
+			$user->mId = $id;
+			$user->loadFromId();
+		}
+
+
+		$wgUser = $user;
 		$wgUser->setCookies();
 		return;
 	}
