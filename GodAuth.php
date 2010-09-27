@@ -41,19 +41,10 @@
 			wfSetupSession();
 		}
 
-		$params = new FauxRequest(array(
-			'wpName' => GodAuth_getUser(),
-			'wpPassword' => '',
-			'wpDomain' => '',
-			'wpRemember' => ''
-		));
-
-		$loginForm = new LoginForm($params);
-		$result = $loginForm->authenticateUserData();
-		if ($result != LoginForm::SUCCESS){
-			error_log('Unexpected GodAuth authentication failure.');
-			return;
-		}
+		$id = User::idFromName(GodAuth_getUser());
+		$user->mId = $id;
+		$user->loadFromId();
+		$wgUser = $user;
 
 		$wgUser->setCookies();
 		return;
