@@ -3,6 +3,9 @@
 	# To use this plugin with a different SSO system, modify these two functions
 	# to return the current username and email address.
 	#
+	# What to use for different apache auth modules:
+	# For mod_authz_ldap - $_SERVER['AUTHENTICATE_MAIL']
+	# For digest/basic auth - $_SERVER['PHP_AUTH_USER']
 
 	function HTTPAuth_getUser(){
 		return ucfirst($_SERVER['AUTHENTICATE_MAIL']);
